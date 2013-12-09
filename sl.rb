@@ -37,6 +37,7 @@ end
 # 定数の宣言
 SourcePath = File.expand_path('../', __FILE__)
 TokenFile = "#{SourcePath}/token.yml"
+HistoryFile = "#{SourcePath}/his.yml"
 # 見ないでーヽ( >ヮ<)ﾉ
 OAuthKey = {
   key: "GjPfDbAGwnJNEBPBA4RKw",
@@ -68,9 +69,7 @@ system(sl_command)
 
 Process.daemon
 
-home = ENV["HOME"]
-filename = "#{home}/.sl/sl.yml"
-hash = YAML::load File.read filename
+hash = YAML::load File.read HistoryFile
 now_sec = DateTime.now.to_time.to_i
 sec_def = now_sec - hash["old_sec"]
 
@@ -93,6 +92,6 @@ Twitter.update("slコマンドが走りました(#{time_def}#{unit}振り#{hash[
 hash["num"] += 1
 hash["old_sec"] = now_sec
 
-File.open filename, 'w' do |f|
+File.open HistoryFile, 'w' do |f|
   f.write hash.to_yaml
 end
