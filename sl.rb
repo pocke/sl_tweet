@@ -1,5 +1,9 @@
 # -*- coding: utf-8 -*-
 
+# Copryright 2013, pocket
+# Licensed MIT
+# http://opensource.org/licenses/mit-license.php
+
 require 'twitter'
 require 'yaml'
 require 'date'
