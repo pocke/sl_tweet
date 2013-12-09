@@ -3,15 +3,55 @@
 require 'twitter'
 require 'yaml'
 require 'date'
+require 'oauth'
 
-source_path = File.expand_path('../', __FILE__)
+def get_oauth(oauth_key, token_file)
+  oauth = OAuth::Consumer.new(
+    oauth_key[:key],
+    oauth_key[:secret],
+    site: "https://api.twitter.com"
+  )
 
-token = YAML::load(File.read("#{source_path}/token.yml"))
+  request_token = oauth.get_request_token
+
+  puts "Please, access this URL: #{request_token.authorize_url}"
+  puts "and get the PIN code."
+
+  print "Enter your PIN code: "
+  pin = gets.to_i
+
+  access_token = request_token.get_access_token(
+    oauth_verifier: pin
+  )
+
+  result = {
+    token: access_token.token,
+    secret: access_token.secret
+  }
+
+  File.open token_file, 'w' do |f|
+    f.write result.to_yaml
+  end
+end
+
+# 定数の宣言
+SourcePath = File.expand_path('../', __FILE__)
+TokenFile = "#{SourcePath}/token.yml"
+# 見ないでーヽ( >ヮ<)ﾉ
+OAuthKey = {
+  key: "GjPfDbAGwnJNEBPBA4RKw",
+  secret: "WOE2iq464DcYFo3gEyhRPXmh3oBKrhSgPAnusaTQmU"
+}
+
+if !File::exist?(TokenFile) then
+  get_oauth(OAuthKey, TokenFile)
+end
+
+token = YAML::load(File.read(TokenFile))
 
 Twitter.configure do |config|
-  # 見ないでーヽ( >ヮ<)ﾉ
-  config.consumer_key = "GjPfDbAGwnJNEBPBA4RKw"
-  config.consumer_secret = "WOE2iq464DcYFo3gEyhRPXmh3oBKrhSgPAnusaTQmU"
+  config.consumer_key = OAuthKey[:key]
+  config.consumer_secret = OAuthKey[:secret]
   config.oauth_token = token[:token]
   config.oauth_token_secret = token[:secret]
 end
