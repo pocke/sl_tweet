@@ -16,7 +16,11 @@ $ gem install twitter oauth
 $ cd
 $ git clone https://github.com/pocke/sl_tweet.git sl
 $ echo 'alias sl="ruby ~/sl/sl.rb"' >> ~/.bashrc
+
+$ source ~/.bashrc
+$ sl
 ```
+初回のslコマンド起動時に、OAuth認証をします。表示されたURLからPINコードを入手して入力して下さい。  
 .bashrcの部分は適宜読み替えて下さい。
 インストールするパスも気に食わなかったら別のところでどうぞ。
 

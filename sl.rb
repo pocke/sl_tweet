@@ -52,6 +52,16 @@ if !File::exist?(TokenFile) then
   get_oauth(OAuthKey, TokenFile)
 end
 
+if !File::exist?(HistoryFile) then
+  h = {
+    old_sec: DateTime.now.to_time.to_i,
+    num: 0,
+  }
+  File.open HistoryFile, 'w' do |f|
+    f.write h.to_yaml
+  end
+end
+
 token = YAML::load(File.read(TokenFile))
 
 Twitter.configure do |config|
@@ -75,7 +85,10 @@ Process.daemon
 
 hash = YAML::load File.read HistoryFile
 now_sec = DateTime.now.to_time.to_i
-sec_def = now_sec - hash["old_sec"]
+sec_def = now_sec - hash[:old_sec]
+
+hash[:num] += 1
+hash[:old_sec] = now_sec
 
 if sec_def < 60 then
   time_def = sec_def
@@ -91,10 +104,7 @@ else
   unit = "日"
 end
 
-Twitter.update("slコマンドが走りました(#{time_def}#{unit}振り#{hash["num"]}回目)")
-
-hash["num"] += 1
-hash["old_sec"] = now_sec
+Twitter.update("slコマンドが走りました(#{time_def}#{unit}振り#{hash[:num]}回目)")
 
 File.open HistoryFile, 'w' do |f|
   f.write hash.to_yaml
