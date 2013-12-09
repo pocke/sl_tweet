@@ -85,26 +85,26 @@ Process.daemon
 
 hash = YAML::load File.read HistoryFile
 now_sec = DateTime.now.to_time.to_i
-sec_def = now_sec - hash[:old_sec]
+sec_diff = now_sec - hash[:old_sec]
 
 hash[:num] += 1
 hash[:old_sec] = now_sec
 
-if sec_def < 60 then
-  time_def = sec_def
+if sec_diff < 60 then
+  time_diff = sec_diff
   unit = "秒"
-elsif sec_def < 3600 then
-  time_def = sec_def / 60
+elsif sec_diff < 3600 then
+  time_diff = sec_diff / 60
   unit = "分"
-elsif sec_def < 86400 then
-  time_def = sec_def / 3600
+elsif sec_diff < 86400 then
+  time_diff = sec_diff / 3600
   unit = "時間"
 else
-  time_def = sec_def / 86400
+  time_diff = sec_diff / 86400
   unit = "日"
 end
 
-Twitter.update("slコマンドが走りました(#{time_def}#{unit}振り#{hash[:num]}回目)")
+Twitter.update("slコマンドが走りました(#{time_diff}#{unit}振り#{hash[:num]}回目)")
 
 File.open HistoryFile, 'w' do |f|
   f.write hash.to_yaml
