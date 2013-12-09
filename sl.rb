@@ -9,6 +9,7 @@ source_path = File.expand_path('../', __FILE__)
 token = YAML::load(File.read("#{source_path}/token.yml"))
 
 Twitter.configure do |config|
+  # 見ないでーヽ( >ヮ<)ﾉ
   config.consumer_key = "GjPfDbAGwnJNEBPBA4RKw"
   config.consumer_secret = "WOE2iq464DcYFo3gEyhRPXmh3oBKrhSgPAnusaTQmU"
   config.oauth_token = token[:token]
