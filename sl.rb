@@ -90,19 +90,16 @@ sec_def = now_sec - hash[:old_sec]
 hash[:num] += 1
 hash[:old_sec] = now_sec
 
-if sec_def < 60 then
-  time_def = sec_def
-  unit = "秒"
-elsif sec_def < 3600 then
-  time_def = sec_def / 60
-  unit = "分"
-elsif sec_def < 86400 then
-  time_def = sec_def / 3600
-  unit = "時間"
-else
-  time_def = sec_def / 86400
-  unit = "日"
-end
+time_def, unit = case sec_def
+  when 0...60 then
+    [sec_def, '秒']
+  when 60...3600 then
+    [sec_def / 60, '分']
+  when 3600...86400 then
+    [sec_def / 3600, '時間']
+  else
+    [sec_def / 86400, '日']
+  end
 
 Twitter.update("slコマンドが走りました(#{time_def}#{unit}振り#{hash[:num]}回目)")
 
