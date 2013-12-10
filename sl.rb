@@ -54,7 +54,6 @@ end
 
 if !File::exist?(HistoryFile) then
   h = {
-    old_sec: Time.now.to_i,
     num: 0,
   }
   File.open HistoryFile, 'w' do |f|
@@ -98,7 +97,7 @@ Process.daemon
 
 hash = YAML::load File.read HistoryFile
 now_sec = Time.now.to_i
-sec_diff = now_sec - hash[:old_sec]
+sec_diff = now_sec - (hash[:old_sec] || now_sec)
 
 hash[:num] += 1
 hash[:old_sec] = now_sec
