@@ -71,7 +71,7 @@ Twitter.configure do |config|
 end
 
 # ^C 対策
-Signal.trap(:INT){}
+Signal.trap(:INT, :IGNORE)
 
 sl_command = "sl"
 ARGV.each{|argv|
