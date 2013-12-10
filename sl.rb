@@ -7,6 +7,7 @@
 require 'twitter'
 require 'yaml'
 require 'oauth'
+require 'optparse'
 
 def get_oauth(oauth_key, token_file)
   oauth = OAuth::Consumer.new(
@@ -74,9 +75,22 @@ end
 Signal.trap(:INT, :IGNORE)
 
 sl_command = "sl"
-ARGV.each{|argv|
-  sl_command << " #{argv}"
-}
+begin
+  OptionParser.new do |o|
+    o.on('-a'){|v| sl_command << ' -a'}
+    o.on('-l'){|v| sl_command << ' -l'}
+    o.on('-F'){|v| sl_command << ' -F'}
+    o.on('-c'){|v| sl_command << ' -c'}
+    # optparseのお節介を無効化
+    o.on('-h', '--h', '--help'){}
+    o.on('-v', '--v', '--version'){}
+
+    o.parse!(ARGV)
+  end
+rescue OptionParser::InvalidOption
+  # 存在しないoptionが指定された場合
+  # 握り潰します。
+end
 
 system(sl_command)
 
