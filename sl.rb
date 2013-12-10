@@ -6,7 +6,6 @@
 
 require 'twitter'
 require 'yaml'
-require 'date'
 require 'oauth'
 
 def get_oauth(oauth_key, token_file)
@@ -54,7 +53,7 @@ end
 
 if !File::exist?(HistoryFile) then
   h = {
-    old_sec: DateTime.now.to_time.to_i,
+    old_sec: Time.now.to_i,
     num: 0,
   }
   File.open HistoryFile, 'w' do |f|
@@ -84,7 +83,7 @@ system(sl_command)
 Process.daemon
 
 hash = YAML::load File.read HistoryFile
-now_sec = DateTime.now.to_time.to_i
+now_sec = Time.now.to_i
 sec_diff = now_sec - hash[:old_sec]
 
 hash[:num] += 1
