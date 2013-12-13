@@ -74,21 +74,20 @@ end
 Signal.trap(:INT, :IGNORE)
 
 sl_command = "sl"
-begin
-  OptionParser.new do |o|
-    o.on('-a'){|v| sl_command << ' -a'}
-    o.on('-l'){|v| sl_command << ' -l'}
-    o.on('-F'){|v| sl_command << ' -F'}
-    o.on('-c'){|v| sl_command << ' -c'}
-    # optparseのお節介を無効化
-    o.on('-h', '--h', '--help'){}
-    o.on('-v', '--v', '--version'){}
-
+OptionParser.new do |o|
+  o.on('-a'){|v| sl_command << ' -a'}
+  o.on('-l'){|v| sl_command << ' -l'}
+  o.on('-F'){|v| sl_command << ' -F'}
+  o.on('-c'){|v| sl_command << ' -c'}
+  # optparseのお節介を無効化
+  o.on('-h', '--h', '--help'){}
+  o.on('-v', '--v', '--version'){}
+  begin
     o.parse!(ARGV)
+  rescue OptionParser::InvalidOption
+    # 存在しないoptionが指定された場合
+    # 握り潰します。
   end
-rescue OptionParser::InvalidOption
-  # 存在しないoptionが指定された場合
-  # 握り潰します。
 end
 
 system(sl_command)
