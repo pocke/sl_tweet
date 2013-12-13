@@ -73,12 +73,11 @@ end
 # ^C 対策
 Signal.trap(:INT, :IGNORE)
 
-sl_command = "sl"
+OPTS = {}
 OptionParser.new do |o|
-  o.on('-a'){|v| sl_command << ' -a'}
-  o.on('-l'){|v| sl_command << ' -l'}
-  o.on('-F'){|v| sl_command << ' -F'}
-  o.on('-c'){|v| sl_command << ' -c'}
+  %w[-a -l -F -c].each do |opt|
+    o.on(opt){OPTS[opt.to_sym] = true}
+  end
   # optparseのお節介を無効化
   o.on('-h', '--h', '--help'){}
   o.on('-v', '--v', '--version'){}
@@ -88,6 +87,11 @@ OptionParser.new do |o|
     # 存在しないoptionが指定された場合
     # 握り潰します。
   end
+end
+
+sl_command = "sl"
+OPTS.each do |key, val|
+  sl_command << " #{key}"
 end
 
 system(sl_command)
