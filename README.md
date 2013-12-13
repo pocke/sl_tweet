@@ -11,12 +11,18 @@ Rubyからslコマンドを呼び出しているので、別途slコマンドの
 [mtoyoda/sl](https://github.com/mtoyoda/sl)
 
 ```sh
-# add gem
-$ gem install twitter oauth
 $ cd
 $ git clone https://github.com/pocke/sl_tweet.git sl
-$ echo 'alias sl="ruby ~/sl/sl.rb"' >> ~/.bashrc
 
+// bundlerを使用する場合(推奨)
+$ gem install bundler
+$ cd sl
+$ bundle install --path vendor/bundle
+
+// bundlerを使用しない場合
+$ gem install twitter oauth
+
+$ echo 'alias sl="ruby ~/sl/sl.rb"' >> ~/.bashrc
 $ source ~/.bashrc
 $ sl
 ```

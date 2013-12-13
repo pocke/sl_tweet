@@ -1,2 +1,5 @@
 token.yml
 his.yml
+Gemfile.lock
+/vendor/bundle/
+/.bundle/

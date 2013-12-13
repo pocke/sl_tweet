@@ -4,9 +4,28 @@
 # Licensed MIT
 # http://opensource.org/licenses/mit-license.php
 
-require 'twitter'
+# 定数の宣言
+SourcePath = File.expand_path('../', __FILE__)
+TokenFile = "#{SourcePath}/token.yml"
+HistoryFile = "#{SourcePath}/his.yml"
+# 見ないでーヽ( >ヮ<)ﾉ
+OAuthKey = {
+  key: "GjPfDbAGwnJNEBPBA4RKw",
+  secret: "WOE2iq464DcYFo3gEyhRPXmh3oBKrhSgPAnusaTQmU"
+}
+# ^C 対策
+Signal.trap(:INT, :IGNORE)
+
+begin
+  ENV['BUNDLE_GEMFILE'] = File::join(SourcePath, 'Gemfile')
+  require 'bundler/setup'
+  Bundler.require
+rescue LoadError, SystemExit
+  require 'twitter'
+  require 'oauth'
+end
+
 require 'yaml'
-require 'oauth'
 require 'optparse'
 
 def get_oauth(oauth_key)
@@ -33,18 +52,6 @@ def get_oauth(oauth_key)
     secret: access_token.secret
   }
 end
-
-# 定数の宣言
-SourcePath = File.expand_path('../', __FILE__)
-TokenFile = "#{SourcePath}/token.yml"
-HistoryFile = "#{SourcePath}/his.yml"
-# 見ないでーヽ( >ヮ<)ﾉ
-OAuthKey = {
-  key: "GjPfDbAGwnJNEBPBA4RKw",
-  secret: "WOE2iq464DcYFo3gEyhRPXmh3oBKrhSgPAnusaTQmU"
-}
-# ^C 対策
-Signal.trap(:INT, :IGNORE)
 
 unless File::exist?(TokenFile) then
   File.open TokenFile, 'w' do |f|
