@@ -47,12 +47,14 @@ OAuthKey = {
   key: "GjPfDbAGwnJNEBPBA4RKw",
   secret: "WOE2iq464DcYFo3gEyhRPXmh3oBKrhSgPAnusaTQmU"
 }
+# ^C 対策
+Signal.trap(:INT, :IGNORE)
 
-if !File::exist?(TokenFile) then
+unless File::exist?(TokenFile) then
   get_oauth(OAuthKey, TokenFile)
 end
 
-if !File::exist?(HistoryFile) then
+unless File::exist?(HistoryFile) then
   h = {
     num: 0,
   }
@@ -60,18 +62,6 @@ if !File::exist?(HistoryFile) then
     f.write h.to_yaml
   end
 end
-
-token = YAML::load(File.read(TokenFile))
-
-Twitter.configure do |config|
-  config.consumer_key = OAuthKey[:key]
-  config.consumer_secret = OAuthKey[:secret]
-  config.oauth_token = token[:token]
-  config.oauth_token_secret = token[:secret]
-end
-
-# ^C 対策
-Signal.trap(:INT, :IGNORE)
 
 OPTS = {}
 OptionParser.new do |o|
@@ -96,7 +86,17 @@ end
 
 system(sl_command)
 
+# 以下バックグラウンドで実行
 Process.daemon
+
+Twitter.configure do |config|
+  token = YAML::load(File.read(TokenFile))
+
+  config.consumer_key = OAuthKey[:key]
+  config.consumer_secret = OAuthKey[:secret]
+  config.oauth_token = token[:token]
+  config.oauth_token_secret = token[:secret]
+end
 
 hash = YAML::load File.read HistoryFile
 now_sec = Time.now.to_i
