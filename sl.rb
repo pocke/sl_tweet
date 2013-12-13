@@ -9,7 +9,7 @@ require 'yaml'
 require 'oauth'
 require 'optparse'
 
-def get_oauth(oauth_key, token_file)
+def get_oauth(oauth_key)
   oauth = OAuth::Consumer.new(
     oauth_key[:key],
     oauth_key[:secret],
@@ -28,14 +28,10 @@ def get_oauth(oauth_key, token_file)
     oauth_verifier: pin
   )
 
-  result = {
+  {
     token: access_token.token,
     secret: access_token.secret
   }
-
-  File.open token_file, 'w' do |f|
-    f.write result.to_yaml
-  end
 end
 
 # 定数の宣言
@@ -51,7 +47,9 @@ OAuthKey = {
 Signal.trap(:INT, :IGNORE)
 
 unless File::exist?(TokenFile) then
-  get_oauth(OAuthKey, TokenFile)
+  File.open TokenFile, 'w' do |f|
+    f.write get_oauth(OAuthKey).to_yaml
+  end
 end
 
 unless File::exist?(HistoryFile) then
