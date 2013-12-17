@@ -94,21 +94,16 @@ system(sl_command)
 # 以下バックグラウンドで実行
 Process.daemon
 
-client = Twitter::REST::Client.new do |config|
-  token = YAML::load(File.read(TokenFile))
-
-  config.consumer_key = OAuthKey[:key]
-  config.consumer_secret = OAuthKey[:secret]
-  config.oauth_token = token[:token]
-  config.oauth_token_secret = token[:secret]
-end
-
-hash = YAML::load File.read HistoryFile
+hash = YAML::load(File::read(HistoryFile))
 now_sec = Time.now.to_i
 sec_diff = now_sec - (hash[:old_sec] || now_sec)
 
 hash[:num] += 1
 hash[:old_sec] = now_sec
+
+File.open HistoryFile, 'w' do |f|
+  f.write hash.to_yaml
+end
 
 time_diff, unit = case sec_diff
   when 0...60 then
@@ -121,8 +116,13 @@ time_diff, unit = case sec_diff
     [sec_diff / 86400, '日']
   end
 
-client.update("slコマンドが走りました(#{time_diff}#{unit}振り#{hash[:num]}回目)")
+client = Twitter::REST::Client.new do |config|
+  token = YAML::load(File.read(TokenFile))
 
-File.open HistoryFile, 'w' do |f|
-  f.write hash.to_yaml
+  config.consumer_key = OAuthKey[:key]
+  config.consumer_secret = OAuthKey[:secret]
+  config.oauth_token = token[:token]
+  config.oauth_token_secret = token[:secret]
 end
+
+client.update("slコマンドが走りました(#{time_diff}#{unit}振り#{hash[:num]}回目)")
