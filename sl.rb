@@ -69,6 +69,7 @@ unless File::exist?(HistoryFile) then
 end
 
 OPTS = {}
+debug = false
 OptionParser.new do |o|
   %w[-a -l -F -c].each do |opt|
     o.on(opt){OPTS[opt.to_sym] = true}
@@ -76,6 +77,7 @@ OptionParser.new do |o|
   # optparseのお節介を無効化
   o.on('-h', '--h', '--help'){}
   o.on('-v', '--v', '--version'){}
+  o.on('--debug'){debug = true}
   begin
     o.parse!(ARGV)
   rescue OptionParser::InvalidOption
@@ -92,7 +94,7 @@ end
 system(sl_command)
 
 # 以下バックグラウンドで実行
-Process.daemon
+Process.daemon unless debug
 
 hash = YAML::load(File::read(HistoryFile))
 now_sec = Time.now.to_i
@@ -125,4 +127,6 @@ client = Twitter::REST::Client.new do |config|
   config.oauth_token_secret = token[:secret]
 end
 
-client.update("slコマンドが走りました(#{time_diff}#{unit}振り#{hash[:num]}回目)")
+msg = "slコマンドが走りました(#{time_diff}#{unit}振り#{hash[:num]}回目)"
+msg = "@null #{msg}" if debug
+client.update(msg)
