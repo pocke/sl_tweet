@@ -30,6 +30,6 @@ $ sl
 .bashrcの部分は適宜読み替えて下さい。
 インストールするパスも気に食わなかったら別のところでどうぞ。
 
-Copyright &copy; 2013 pocke
+Copyright &copy; 2013-2014 pocke
 Licensed [MIT][mit]
 [MIT]: http://www.opensource.org/licenses/mit-license.php

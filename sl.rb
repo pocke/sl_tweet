@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Copryright 2013, pocket
+# Copryright 2013-2014, pocke
 # Licensed MIT
 # http://opensource.org/licenses/mit-license.php
 
