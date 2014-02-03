@@ -127,6 +127,6 @@ client = Twitter::REST::Client.new do |config|
   config.oauth_token_secret = token[:secret]
 end
 
-msg = "slコマンドが走りました(#{time_diff}#{unit}振り#{hash[:num]}回目)"
+msg = "slコマンドが走りました(#{hash[:num] != 1 ? "#{time_diff}#{unit}振り" : nil}#{hash[:num]}回目)"
 msg = "@null #{msg}" if debug
 client.update(msg)
