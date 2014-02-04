@@ -72,7 +72,7 @@ OPTS = {}
 debug = false
 OptionParser.new do |o|
   %w[-a -l -F -c].each do |opt|
-    o.on(opt){OPTS[opt.to_sym] = true}
+    o.on(opt){OPTS[opt] = true}
   end
   # optparseのお節介を無効化
   o.on('-h', '--h', '--help'){}
@@ -86,12 +86,7 @@ OptionParser.new do |o|
   end
 end
 
-sl_command = "sl"
-OPTS.each do |key, val|
-  sl_command << " #{key}"
-end
-
-system(sl_command)
+system('sl', *OPTS.map{|key, val| key})
 
 # 以下バックグラウンドで実行
 Process.daemon unless debug
