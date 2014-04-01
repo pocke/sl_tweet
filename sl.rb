@@ -91,7 +91,7 @@ system('sl', *OPTS.map{|key, val| key})
 # 以下バックグラウンドで実行
 Process.daemon unless debug
 
-hash = YAML::load(File::read(HistoryFile))
+hash = YAML::load_file(HistoryFile)
 now_sec = Time.now.to_i
 sec_diff = now_sec - (hash[:old_sec] || now_sec)
 
@@ -114,7 +114,7 @@ time_diff, unit = case sec_diff
   end
 
 client = Twitter::REST::Client.new do |config|
-  token = YAML::load(File.read(TokenFile))
+  token = YAML::load_file(TokenFile)
 
   config.consumer_key = OAuthKey[:key]
   config.consumer_secret = OAuthKey[:secret]
